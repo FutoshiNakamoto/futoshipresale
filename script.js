@@ -32,7 +32,7 @@ function calculateBuyTotal() {
 
     const buyDetailedSummary = document.getElementById("buy-detailed-summary");
     buyDetailedSummary.innerHTML = `
-        <p>2% Tax on Buy</p>
+        <p>5% Tax on Buy</p>
         <p>Total Amount: $${buyTotal.toFixed(18)} MEMEDOG</p>
         <p>Total You Receive: $${taxReduced.toFixed(18)} MEMEDOG</p>
     `;
@@ -50,7 +50,7 @@ function calculateSellTotal() {
 
     const sellDetailedSummary = document.getElementById("sell-detailed-summary");
     sellDetailedSummary.innerHTML = `
-        <p>8% Tax on Sell</p>
+        <p>5% Tax on Sell</p>
         <p>Total Amount: $${sellTotal.toFixed(18)} BNB</p>
         <p>Total You Receive: $${taxReduced.toFixed(18)} BNB</p>
     `;
