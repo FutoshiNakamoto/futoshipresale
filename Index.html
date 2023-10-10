@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Futoshi(MEMEDOG) Presale Site</title>
+    <link rel="icon" type="image/x-icon" href="Logo.png">
+    <!-- Include CSS and JavaScript files -->
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <script src="web3.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <img src="Logo.png" alt="Logo" class="logo">
+        <button id="web3-connect-button" class="web3-button">Connect Web3</button>
+        <h1>Futoshi(MEMEDOG) Presale Site</h1>
+        <div class="buy-sell-container">
+
+            <div class="tabs">
+                <button class="tab-button active" id="buy-tab">Buy</button>
+                <button class="tab-button" id="sell-tab">Sell</button>
+            </div>
+
+            <div class="tab-content active" id="buy-content">
+                <h2>Buy</h2>
+                <label for="buy-quantity" class="input-label">Enter Quantity to Buy in BNB:</label>
+                <input type="number" id="buy-quantity" class="input-box" min="0" step="0.000001" placeholder="Enter amount in $BNB" oninput="limitDecimalPlaces(event, 6, 0)">
+                <div class="price" id="buy-price">Price: $0.00000001 BNB</div>
+                <button class="action-button" id="buy-button" onclick="buy()">Buy</button>
+                <div class="detailed-summary" id="buy-detailed-summary">
+                    <p>5% Tax on Buy</p>
+                    <p>Total Amount: $0.000000000000000000 MEMEDOG</p>
+                    <p>Total You Receive: $0.000000000000000000 MEMEDOG</p>
+                </div>
+            </div>
+
+            <div class="tab-content" id="sell-content">
+                <h2>Sell</h2>
+                <label for="sell-quantity" class="input-label">Enter Quantity to Sell in MEMEDOG:</label>
+                <input type="number" id="sell-quantity" class="input-box" min="0" step="0.000001" placeholder="Enter amount in $MEMEDOG" oninput="limitDecimalPlaces(event, 6, 1)">
+                <div class="price" id="sell-price">Price: $0.00000001 BNB</div>
+                <button id="sell-button" onclick="checkAllowance()" class="action-button">Check Allowance</button>
+                <div class="detailed-summary" id="sell-detailed-summary">
+                    <p>5% Tax on Sell</p>
+                    <p>Total Amount: $0.000000000000000000 BNB</p>
+                    <p>Total You Receive: $0.000000000000000000 BNB</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Include JavaScript file -->
+    <script src="script.js"></script>
+    <script>
+        function limitDecimalPlaces(e, count, a) {
+            if(a == 0) {
+                calculateBuyTotal(e);
+            }
+            if(a == 1) {
+                calculateSellTotal(e);
+            }
+            if ((e.target.value.indexOf('.') != -1) && (e.target.value.split('.')[1].length > count)) {
+                let num = parseFloat(e.target.value);
+                e.target.value = num.toFixed(count);
+            }
+        }
+
+        let web3 = new Web3(window.ethereum);
+        let contractAddress = '0x2716959806d6977FaF3e3e0E40d4dD9A0804e7B4';
+        let futoshiAddress = '0x89F3FA095060eAe462Ae1df1e8Db3532dD3a122C';
+        let futoshiContract = new web3.eth.Contract([{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"inputs":[],"name":"StartedSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"TotalBurnedSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"spender","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"burnAddress","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"subtractedValue","type":"uint256"}],"name":"decreaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"addedValue","type":"uint256"}],"name":"increaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"sender","type":"address"},{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"}], futoshiAddress);
+        let presaleContract = new web3.eth.Contract([{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"depositor","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"EtherDeposited","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"recipient","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"EtherWithdrawn","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"buyer","type":"address"},{"indexed":false,"internalType":"uint256","name":"amountPaid","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"amountReceived","type":"uint256"}],"name":"TokensPurchased","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"seller","type":"address"},{"indexed":false,"internalType":"uint256","name":"amountReceived","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"amountSent","type":"uint256"}],"name":"TokensSold","type":"event"},{"inputs":[{"internalType":"address","name":"_wallet","type":"address"}],"name":"addExcludedFromFee","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"buyFeePercentage","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"buyFutoshi","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"address","name":"newWallet","type":"address"}],"name":"changeFeeWallet","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"contractPaused","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"depositFutoshi","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"excludedFromFee","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"feeWallet","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"futoshiPriceInEther","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"futoshiSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"futoshiToken","outputs":[{"internalType":"contract IERC20","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getEtherBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_wallet","type":"address"}],"name":"removeExcludedFromFee","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"sellFeePercentage","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_futoshiAmount","type":"uint256"}],"name":"sellFutoshi","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_newBuyFeePercentage","type":"uint256"}],"name":"setBuyFeePercentage","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_newFutoshiPriceInEther","type":"uint256"}],"name":"setFutoshiPrice","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_newSellFeePercentage","type":"uint256"}],"name":"setSellFeePercentage","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"withdrawEther","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"withdrawFutoshi","outputs":[],"stateMutability":"nonpayable","type":"function"},{"stateMutability":"payable","type":"receive"}], contractAddress);
+        let decimals = 18;
+        let userAccount;
+
+        async function checkAllowance() {
+            account = await ethereum.request({ method: 'eth_requestAccounts' });
+            userAccount = account[0];
+            let amount = document.getElementById('sell-quantity').value;
+            let adjustedAmount = BigInt(amount) * BigInt(10 ** decimals);
+
+            let allowance = await futoshiContract.methods.allowance(userAccount, contractAddress).call();
+            if (allowance >= adjustedAmount) {
+                document.getElementById('sell-button').innerText = 'Sell';
+                sell();
+            } else {
+                futoshiContract.methods.approve(contractAddress, adjustedAmount.toString()).send({from: userAccount});
+            }
+        }
+
+        async function buy() {
+            accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+            userAccount = accounts[0];
+            let amountInEther = document.getElementById('buy-quantity').value;
+            let amountInWei = web3.utils.toWei(amountInEther, 'ether');
+            await presaleContract.methods.buyFutoshi().send({from: userAccount, value: amountInWei});
+        }
+
+        async function sell() {
+            account = await ethereum.request({ method: 'eth_requestAccounts' });
+            userAccount = account[0];
+            let amount = document.getElementById('sell-quantity').value;
+            let adjustedAmount = BigInt(amount) * BigInt(10 ** decimals);
+            await presaleContract.methods.sellFutoshi(adjustedAmount.toString()).send({from: userAccount});
+        }
+        
+
+        document.addEventListener('DOMContentLoaded', function () {
+            window.onload = async function() {
+                await document.getElementById("web3-connect-button").click();
+            };
+        });
+
+        const connectButton = document.getElementById('web3-connect-button');
+
+        document.addEventListener('DOMContentLoaded', function () {
+            async function connectToPolygon() {
+                // Check if MetaMask or a similar extension is installed
+                if (typeof ethereum === 'undefined') {
+                    alert("Please install MetaMask or a similar extension to use this feature.");
+                    return;
+                }
+
+                try {
+                    // Request access to the user's accounts
+                    const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+
+                    const chainId = await ethereum.request({ method: 'eth_chainId' });
+                    const isBSC = chainId === '0x38' || chainId === '0x61'; // Check for either '56' or '97'
+
+                    if (!isBSC) {
+                        // Request the user to switch to Binance Smart Chain network
+                        try {
+                            await ethereum.request({
+                                method: 'wallet_addEthereumChain',
+                                params: [{
+                                    chainId: '0x38', // Binance Smart Chain ID
+                                    chainName: 'Binance Smart Chain Mainnet',
+                                    nativeCurrency: {
+                                        name: 'BNB',
+                                        symbol: 'BNB',
+                                        decimals: 18,
+                                    },
+                                    rpcUrls: ['https://bsc-dataseed.binance.org/'],
+                                    blockExplorerUrls: ['https://bscscan.com/'],
+                                }],
+                            });
+                        } catch (error) {
+                            alert("Failed to add Binance Smart Chain network to MetaMask. Please add it manually.");
+                            return;
+                        }
+
+                        // Switch to Binance Smart Chain network
+                        await ethereum.request({
+                            method: 'wallet_switchEthereumChain',
+                            params: [{ chainId: '0x38' }],
+                        });
+                    }
+
+
+                    if (accounts.length > 0) {
+                        const address = accounts[0];
+                        const shortenedAddress = address.slice(0, 5) + '...' + address.slice(-3);
+                        connectButton.textContent = `Connected: ${shortenedAddress}`;
+                        connectButton.disabled = true;
+                    }
+
+                } catch (error) {
+                    console.error(error);
+                    alert("An error occurred while connecting to your wallet.");
+                }
+            }
+
+            connectButton.addEventListener('click', connectToPolygon);
+        });
+    </script>
+</body>
+</html>
