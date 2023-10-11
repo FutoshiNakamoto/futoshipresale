@@ -54,15 +54,20 @@
     <script src="script.js"></script>
     <script>
         function limitDecimalPlaces(e, count, a) {
-            if(a == 0) {
-                calculateBuyTotal(e);
+            if (a == 0) {
+                calculateBuyTotal();
             }
-            if(a == 1) {
-                calculateSellTotal(e);
+            if (a == 1) {
+                calculateSellTotal();
             }
-            if ((e.target.value.indexOf('.') != -1) && (e.target.value.split('.')[1].length > count)) {
-                let num = parseFloat(e.target.value);
-                e.target.value = num.toFixed(count);
+
+            const value = e.target.value;
+
+            if (value.indexOf('.') !== -1) {
+                const parts = value.split('.');
+                if (parts[1].length > 6) {
+                    e.target.value = parts[0] + '.' + parts[1].slice(0, 6);
+                }
             }
         }
 
