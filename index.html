@@ -83,7 +83,7 @@
             let allowance = await futoshiContract.methods.allowance(userAccount, contractAddress).call();
             if (allowance >= adjustedAmount) {
                 document.getElementById('sell-button').innerText = 'Sell';
-                sell();
+                document.getElementById('sell-button').onclick = sell;
             } else {
                 const gas = await futoshiContract.methods.approve(contractAddress, adjustedAmount.toString()).estimateGas({ from: userAccount });
                 const gasPrice = await web3.eth.getGasPrice();
