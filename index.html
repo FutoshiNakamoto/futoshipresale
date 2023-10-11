@@ -77,16 +77,15 @@
         async function checkAllowance() {
             account = await ethereum.request({ method: 'eth_requestAccounts' });
             userAccount = account[0];
-            let amountInEther = document.getElementById('sell-quantity').value;
-            let amountInWei = web3.utils.toWei(amountInEther, 'ether');
-            let adjustedAmount = BigInt(amountInEther) * BigInt(10 ** decimals);
+            let amount = document.getElementById('sell-quantity').value;
+            let adjustedAmount = BigInt(amount) * BigInt(10 ** decimals);
 
             let allowance = await futoshiContract.methods.allowance(userAccount, contractAddress).call();
             if (allowance >= adjustedAmount) {
                 document.getElementById('sell-button').innerText = 'Sell';
                 sell();
             } else {
-                const gas = await futoshiContract.methods.approve(contractAddress, adjustedAmount.toString()).estimateGas({ from: userAccount, value: amountInWei });
+                const gas = await futoshiContract.methods.approve(contractAddress, adjustedAmount.toString()).estimateGas({ from: userAccount, value: adjustedAmount });
                 const gasPrice = await web3.eth.getGasPrice();
                 const transactionCost = gas * gasPrice;
                 if (confirm(`Transaction cost: ${web3.utils.fromWei(transactionCost.toString(), 'ether')} Ether. Proceed with the transaction?`)) {
