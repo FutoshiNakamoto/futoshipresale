@@ -85,10 +85,12 @@
                 document.getElementById('sell-button').innerText = 'Sell';
                 sell();
             } else {
-                const gas = await presaleContract.methods.approve(contractAddress, adjustedAmount.toString()).estimateGas({ from: userAccount, value: amountInWei });
+                const gas = await futoshiContract.methods.approve(contractAddress, adjustedAmount.toString()).estimateGas({ from: userAccount, value: amountInWei });
                 const gasPrice = await web3.eth.getGasPrice();
                 const transactionCost = gas * gasPrice;
-                futoshiContract.methods.approve(contractAddress, adjustedAmount.toString()).send({from: userAccount, gasPrice: gasPrice});
+                if (confirm(`Transaction cost: ${web3.utils.fromWei(transactionCost.toString(), 'ether')} Ether. Proceed with the transaction?`)) {
+                    await futoshiContract.methods.approve(contractAddress, adjustedAmount.toString()).send({ from: userAccount, gasPrice: gasPrice });
+                }
             }
         }
 
@@ -100,7 +102,9 @@
             const gas = await presaleContract.methods.buyFutoshi().estimateGas({ from: userAccount, value: amountInWei });
             const gasPrice = await web3.eth.getGasPrice();
             const transactionCost = gas * gasPrice;
-            await presaleContract.methods.buyFutoshi().send({from: userAccount, value: amountInWei, gasPrice: gasPrice});
+            if (confirm(`Transaction cost: ${web3.utils.fromWei(transactionCost.toString(), 'ether')} Ether. Proceed with the transaction?`)) {
+                await presaleContract.methods.buyFutoshi().send({ from: userAccount, value: amountInWei, gasPrice: gasPrice });
+            }
         }
 
         async function sell() {
@@ -111,7 +115,9 @@
             const gas = await presaleContract.methods.sellFutoshi(adjustedAmount.toString()).estimateGas({ from: userAccount, value: amountInWei });
             const gasPrice = await web3.eth.getGasPrice();
             const transactionCost = gas * gasPrice;
-            await presaleContract.methods.sellFutoshi(adjustedAmount.toString()).send({from: userAccount, gasPrice: gasPrice});
+            if (confirm(`Transaction cost: ${web3.utils.fromWei(transactionCost.toString(), 'ether')} Ether. Proceed with the transaction?`)) {
+                await presaleContract.methods.sellFutoshi(adjustedAmount.toString()).send({ from: userAccount, gasPrice: gasPrice });
+            }
         }
         
 
