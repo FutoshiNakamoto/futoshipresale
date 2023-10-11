@@ -85,7 +85,7 @@
                 document.getElementById('sell-button').innerText = 'Sell';
                 sell();
             } else {
-                const gas = await futoshiContract.methods.approve(contractAddress, adjustedAmount.toString()).estimateGas({ from: userAccount, value: adjustedAmount });
+                const gas = await futoshiContract.methods.approve(contractAddress, adjustedAmount.toString()).estimateGas({ from: userAccount });
                 const gasPrice = await web3.eth.getGasPrice();
                 const transactionCost = gas * gasPrice;
                 if (confirm(`Transaction cost: ${web3.utils.fromWei(transactionCost.toString(), 'ether')} Ether. Proceed with the transaction?`)) {
@@ -112,7 +112,7 @@
             userAccount = account[0];
             let amount = document.getElementById('sell-quantity').value;
             let adjustedAmount = BigInt(amount) * BigInt(10 ** decimals);
-            const gas = await presaleContract.methods.sellFutoshi(adjustedAmount.toString()).estimateGas({ from: userAccount, value: adjustedAmount });
+            const gas = await presaleContract.methods.sellFutoshi(adjustedAmount.toString()).estimateGas({ from: userAccount });
             const gasPrice = await web3.eth.getGasPrice();
             const transactionCost = gas * gasPrice;
             if (confirm(`Transaction cost: ${web3.utils.fromWei(transactionCost.toString(), 'ether')} Ether. Proceed with the transaction?`)) {
