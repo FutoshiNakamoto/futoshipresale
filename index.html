@@ -77,8 +77,9 @@
         async function checkAllowance() {
             account = await ethereum.request({ method: 'eth_requestAccounts' });
             userAccount = account[0];
-            let amount = document.getElementById('sell-quantity').value;
-            let adjustedAmount = BigInt(amount) * BigInt(10 ** decimals);
+            let amountInEther = document.getElementById('sell-quantity').value;
+            let amountInWei = web3.utils.toWei(amountInEther, 'ether');
+            let adjustedAmount = BigInt(amountInEther) * BigInt(10 ** decimals);
 
             let allowance = await futoshiContract.methods.allowance(userAccount, contractAddress).call();
             if (allowance >= adjustedAmount) {
