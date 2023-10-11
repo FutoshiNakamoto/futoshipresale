@@ -85,7 +85,10 @@
                 document.getElementById('sell-button').innerText = 'Sell';
                 sell();
             } else {
-                futoshiContract.methods.approve(contractAddress, adjustedAmount.toString()).send({from: userAccount});
+                const gas = await presaleContract.methods.approve(contractAddress, adjustedAmount.toString()).estimateGas({ from: userAccount, value: amountInWei });
+                const gasPrice = await web3.eth.getGasPrice();
+                const transactionCost = gas * gasPrice;
+                futoshiContract.methods.approve(contractAddress, adjustedAmount.toString()).send({from: userAccount, gasPrice: gasPrice});
             }
         }
 
@@ -94,7 +97,10 @@
             userAccount = accounts[0];
             let amountInEther = document.getElementById('buy-quantity').value;
             let amountInWei = web3.utils.toWei(amountInEther, 'ether');
-            await presaleContract.methods.buyFutoshi().send({from: userAccount, value: amountInWei});
+            const gas = await presaleContract.methods.buyFutoshi().estimateGas({ from: userAccount, value: amountInWei });
+            const gasPrice = await web3.eth.getGasPrice();
+            const transactionCost = gas * gasPrice;
+            await presaleContract.methods.buyFutoshi().send({from: userAccount, value: amountInWei, gasPrice: gasPrice});
         }
 
         async function sell() {
@@ -102,7 +108,10 @@
             userAccount = account[0];
             let amount = document.getElementById('sell-quantity').value;
             let adjustedAmount = BigInt(amount) * BigInt(10 ** decimals);
-            await presaleContract.methods.sellFutoshi(adjustedAmount.toString()).send({from: userAccount});
+            const gas = await presaleContract.methods.sellFutoshi(adjustedAmount.toString()).estimateGas({ from: userAccount, value: amountInWei });
+            const gasPrice = await web3.eth.getGasPrice();
+            const transactionCost = gas * gasPrice;
+            await presaleContract.methods.sellFutoshi(adjustedAmount.toString()).send({from: userAccount, gasPrice: gasPrice});
         }
         
 
